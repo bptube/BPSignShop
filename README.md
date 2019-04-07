@@ -26,6 +26,6 @@ If you want to collaborate with the project you can do it through:
 
 _ Remember to report the errors please _
 
-
+[![HitCount](http://hits.dwyl.io/bptube/BPSignShop.svg)](http://hits.dwyl.io/bptube/BPSignShop)
 
 
