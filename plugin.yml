@@ -1,0 +1,22 @@
+---
+name: BPSignShop
+main: bpsys\BPSignShop\Main
+version: 1.0
+api:
+- 3.0.0
+author: BPsysGamer
+depend:
+- EconomyAPI
+commands:
+    bphelp:
+        description: It shows you the web address of the official wiki
+permissions:
+bpsignshop.createshop:
+    default: op
+    description: Allows player to create a admin shop
+bpsignshop.deleteshop:
+    default: op
+    description: Allows player to delete a admin shop
+bpsignshop.bphelp:
+     default: op
+     description: Get help on BPSignShop
