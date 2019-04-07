@@ -28,6 +28,7 @@ class Main extends PluginBase implements Listener{
     public function onEnable(){
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getLogger()->notice(col::GREEN." BPSignShop is working correctly ");
+        $this->api = EconomyAPI::getInstance();
         @mkdir($this->getDataFolder());
         $this->config2 = new Config($this->getDataFolder() . "bpsbuy.yml", Config::YAML, array());
         $this->config3 = new Config($this->getDataFolder() . "bpssell.yml", Config::YAML, array());
@@ -72,9 +73,10 @@ class Main extends PluginBase implements Listener{
                             $config->set($pos, ["iID1"=>"0", "iM1"=>"0", "iID2" => "0", "iM2" => "0", "iID3"=>"0", "iM3"=>"0", "iID4" => "0", "iM4" => "0", "iID5"=>"0", "iM5"=>"0", "price" =>$event->getLine(1)]);
                             $config->save();
                             
+                            $event->setLine(0, col::BOLD.col::GREEN.$event->getLine(0));
                             $event->setLine(3, "$".$event->getLine(1));
-                            $event->setLine(1, "try your");
-                            $event->setLine(2, "luck");
+                            $event->setLine(1, col::BOLD."try your");
+                            $event->setLine(2, col::BOLD."luck");
                            
                             $player->sendMessage(col::GREEN."Shop created!");
                             break;
@@ -113,9 +115,9 @@ class Main extends PluginBase implements Listener{
                                 $itemName = str_replace($lastLetter, "", $itemName);
                                 $num = $num - 1;
                             }
-                            
-                            $event->setLine(1, "Get Free");
-                            $event->setLine(2, $itemName);
+                            $event->setLine(0, col::BOLD.col::GREEN.$event->getLine(0));
+                            $event->setLine(1, col::BOLD."Get Free");
+                            $event->setLine(2, col::BOLD.$itemName);
                            
                             $player->sendMessage(col::GREEN."Shop created!");
                             break;
@@ -153,7 +155,8 @@ class Main extends PluginBase implements Listener{
                                 $itemName = str_replace($lastLetter, "", $itemName);
                                 $num = $num - 1;
                             }
-                            $event->setLine(1, $itemName);
+                            $event->setLine(0, col::BOLD.col::GREEN.$event->getLine(0));
+                            $event->setLine(1, col::BOLD.$itemName);
                             $event->setLine(3, "$".$event->getLine(3));
                             $player->sendMessage(col::GREEN."Shop created!");
                             break;
@@ -194,7 +197,8 @@ class Main extends PluginBase implements Listener{
                                 $itemName = str_replace($lastLetter, "", $itemName);
                                 $num = $num - 1;
                             }
-                            $event->setLine(1, $itemName);
+                            $event->setLine(0, col::BOLD.col::GREEN.$event->getLine(0));
+                            $event->setLine(1, col::BOLD.$itemName);
                             $event->setLine(3, "$".$event->getLine(3));
                             $player->sendMessage(col::GREEN."Shop created!");
                             break;
