@@ -50,6 +50,26 @@ class Main extends PluginBase implements Listener{
            }
           }
         }
+        if ($cmd->getName() === "bpitem"){
+        	if(!$sender instanceof Player){
+            $sender->sendMessage(col::GREEN . "This command only works in the game" ); 
+			return true;
+		     }else{
+			$player = $sender->getPlayer();
+        	if($player->hasPermission("bpsignshop.bpitem")){
+        	$item = $sender->getInventory()->getItemInHand();
+            $name = $item->getName();
+            $iid = $item ->getID();
+            $sender->sendMessage(col::BOLD.col::BLUE."************************");
+            $sender->sendMessage(col::RED . "Information: ");
+            $sender->sendMessage(col::RED . "Name: ".col::BOLD.$name);
+            $sender->sendMessage(col::RED . "id: ".col::BOLD.$iid);
+            $sender->sendMessage(col::BOLD.col::BLUE."************************");
+            }else{
+            $sender->sendMessage(col::RED . "You do not have permission to use this command");
+           }
+          }
+        }
         return true;
     }
     
@@ -289,7 +309,7 @@ class Main extends PluginBase implements Listener{
             $player = $event->getPlayer();
           
             $player->getInventory()->addItem(Item::get($id, $meta, $amount));
-            $player->sendMessage(col::GREEN."They have given you".col::YELLOW.$amount." ".$name);
+            $player->sendMessage(col::GREEN."They have given you ".col::YELLOW.$amount." ".$name);
             
     }elseif(is_array($sellpos)){
             $config = new Config($this->getDataFolder() . "bpssell.yml", Config::YAML);
