@@ -10,6 +10,8 @@ depend:
 commands:
     bphelp:
         description: It shows you the web address of the official wiki
+    bpitem:
+        description: Show the name and id of the item you have in your hand
 permissions:
 bpsignshop.createshop:
     default: op
@@ -20,3 +22,6 @@ bpsignshop.deleteshop:
 bpsignshop.bphelp:
      default: op
      description: Get help on BPSignShop
+bpsignshop.bpitem:
+      default: false
+      description: Show the name and id of the item you have in your hand
