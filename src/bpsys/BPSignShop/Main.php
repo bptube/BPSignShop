@@ -101,7 +101,7 @@ class Main extends PluginBase implements Listener{
                             $player->sendMessage(col::GREEN."Shop created!");
                             break;
                         } }
-                 case "[BPFREE]":
+                 case "[BPFree]":
                     if(is_numeric((int) $event->getLine(1))){
                         $level = $event->getBlock()->getLevel()->getName();
                         $xx = $event->getBlock()->getX();
@@ -126,11 +126,11 @@ class Main extends PluginBase implements Listener{
                             
                             $itemName = Item::get($item[0], $item[1])->getName();
                             $num = strlen($itemName);
-                            if($num > 15){
+                            if($num >= 13){
                                 $itemName = str_replace(" ", "", $itemName);
                             }
                             $num = strlen($itemName);
-                            while($num > 15){
+                            while($num >= 13){
                                 $lastLetter = substr($itemName, -1);
                                 $itemName = str_replace($lastLetter, "", $itemName);
                                 $num = $num - 1;
@@ -166,11 +166,11 @@ class Main extends PluginBase implements Listener{
 
                             $itemName = Item::get($item[0], $item[1])->getName();
                             $num = strlen($itemName);
-                            if($num > 15){
+                            if($num >= 13){
                                 $itemName = str_replace(" ", "", $itemName);
                             }
                             $num = strlen($itemName);
-                            while($num > 15){
+                            while($num >= 13){
                                 $lastLetter = substr($itemName, -1);
                                 $itemName = str_replace($lastLetter, "", $itemName);
                                 $num = $num - 1;
@@ -208,11 +208,11 @@ class Main extends PluginBase implements Listener{
 
                             $itemName = Item::get($item[0], $item[1])->getName();
                             $num = strlen($itemName);
-                            if($num > 15){
+                            if($num >= 13){
                                 $itemName = str_replace(" ", "", $itemName);
                             }
                             $num = strlen($itemName);
-                            while($num > 15){
+                            while($num >= 13){
                                 $lastLetter = substr($itemName, -1);
                                 $itemName = str_replace($lastLetter, "", $itemName);
                                 $num = $num - 1;
@@ -379,7 +379,7 @@ class Main extends PluginBase implements Listener{
             if($player->hasPermission("bpsignshop.deleteshop")){
                 $config = new Config($this->getDataFolder() . "bpsfree.yml", Config::YAML);
                 unset($this->config5->$pos);
-                $this->config4->save(true);
+                $this->config5->save(true);
                 $player->sendMessage(col::GREEN."Shop deleted!");
             }else{
                 $event->setCancelled();
