@@ -30,10 +30,10 @@ class Main extends PluginBase implements Listener{
         $this->getLogger()->notice(col::GREEN." BPSignShop is working correctly ");
         $this->api = EconomyAPI::getInstance();
         @mkdir($this->getDataFolder());
-        $this->config2 = new Config($this->getDataFolder() . "bpsbuy.yml", Config::YAML, array());
-        $this->config3 = new Config($this->getDataFolder() . "bpssell.yml", Config::YAML, array());
-        $this->config4 = new Config($this->getDataFolder() . "bpsrandom.yml", Config::YAML, array());
-        $this->config5 = new Config($this->getDataFolder() . "bpsfree.yml", Config::YAML, array());
+        @mkdir($this->getDataFolder()."bpbuy");
+        @mkdir($this->getDataFolder()."bpsell");
+        @mkdir($this->getDataFolder()."bprandom");
+        @mkdir($this->getDataFolder()."bpfree");
      }
     
  public function onCommand(CommandSender $sender,Command $cmd, string $label, array $args) : bool{
@@ -88,12 +88,12 @@ class Main extends PluginBase implements Listener{
                         $z = (int) $zz;
                         if($event->getLine(1) >= 1){
                             $pos = $level.$x.$y.$z;
-
-                            $config = new Config($this->getDataFolder() . "bpsrandom.yml", Config::YAML); 
-                            $config->set($pos, ["iID1"=>"0", "iM1"=>"0", "iID2" => "0", "iM2" => "0", "iID3"=>"0", "iM3"=>"0", "iID4" => "0", "iM4" => "0", "iID5"=>"0", "iM5"=>"0", "price" =>$event->getLine(1)]);
-                            $config->save();
+                             
+                             $shopcfg = new Config($this->getDataFolder() . "bprandom/".$pos.".yml", Config::YAML);
+                             $shopcfg->set($pos, ["iID1"=>"0", "iM1"=>"0", "iID2" => "0", "iM2" => "0", "iID3"=>"0", "iM3"=>"0", "iID4" => "0", "iM4" => "0", "iID5"=>"0", "iM5"=>"0", "price" =>$event->getLine(1)]);
+                             $shopcfg->save();
+                                                                                                   
                             
-                            $event->setLine(0, col::BOLD.col::GREEN.$event->getLine(0));
                             $event->setLine(3, "$".$event->getLine(1));
                             $event->setLine(1, col::BOLD."try your");
                             $event->setLine(2, col::BOLD."luck");
@@ -117,14 +117,20 @@ class Main extends PluginBase implements Listener{
                             $item = array($id, "0");
                         }
                         if($event->getLine(1) >= 1 && $event->getLine(2) >= 1){
-                        	
+                          $itemName = Item::get($item[0], $item[1])->getName();
+                            if($itemName === "Unknown" || $itemName === "Air"){
+                            	$event->setLine(0, col::BOLD.col::RED."ERROR");
+                                $event->setLine(1, col::RED."incorrect id");
+                                $player->sendMessage(col::RED."The store was not created");
+                                break;
+                             } else {
+                          
                             $pos = $level.$x.$y.$z;
 
-                            $config = new Config($this->getDataFolder() . "bpsfree.yml", Config::YAML); 
-                            $config->set($pos, ["itemID"=>$item[0], "itemMeta"=>$item[1], "amount"=>$event->getLine(2)]);
-                            $config->save();
+                            $shopcfg = new Config($this->getDataFolder() . "bpfree/".$pos.".yml", Config::YAML);
+                            $shopcfg->set($pos, ["itemID"=>$item[0], "itemMeta"=>$item[1], "amount"=>$event->getLine(2)]);
+                            $shopcfg->save();
                             
-                            $itemName = Item::get($item[0], $item[1])->getName();
                             $num = strlen($itemName);
                             if($num >= 13){
                                 $itemName = str_replace(" ", "", $itemName);
@@ -135,13 +141,13 @@ class Main extends PluginBase implements Listener{
                                 $itemName = str_replace($lastLetter, "", $itemName);
                                 $num = $num - 1;
                             }
-                            $event->setLine(0, col::BOLD.col::GREEN.$event->getLine(0));
+                           
                             $event->setLine(1, col::BOLD."Get Free");
                             $event->setLine(2, col::BOLD.$itemName);
                            
                             $player->sendMessage(col::GREEN."Shop created!");
                             break;
-                        } }
+                        } }}
                 case "[BPBuy]":
                     if(is_numeric((int) $event->getLine(1)) && is_numeric((int) $event->getLine(2)) && is_numeric((int) $event->getLine(3))){
                         $level = $event->getBlock()->getLevel()->getName();
@@ -158,13 +164,21 @@ class Main extends PluginBase implements Listener{
                             $item = array($id, "0");
                         }
                         if($event->getLine(2) >= 1 && $event->getLine(3) > 0){
+                        	$itemName = Item::get($item[0], $item[1])->getName();
+                             
+                             if($itemName === "Unknown" || $itemName === "Air"){
+                            	$event->setLine(0, col::BOLD.col::RED."ERROR");
+                                $event->setLine(1, col::RED."incorrect id");
+                                $player->sendMessage(col::RED."The store was not created");
+                                break;
+                             }else{
+                             
                             $pos = $level.$x.$y.$z;
 
-                            $config = new Config($this->getDataFolder() . "bpsbuy.yml", Config::YAML);
-                            $config->set($pos, ["itemID"=>$item[0], "itemMeta"=>$item[1], "amount"=>$event->getLine(2), "price"=>$event->getLine(3)]);
-                            $config->save();
+                            $shopcfg = new Config($this->getDataFolder() . "bpbuy/".$pos.".yml", Config::YAML);
+                            $shopcfg->set($pos, ["itemID"=>$item[0], "itemMeta"=>$item[1], "amount"=>$event->getLine(2), "price"=>$event->getLine(3)]);
+                            $shopcfg->save();
 
-                            $itemName = Item::get($item[0], $item[1])->getName();
                             $num = strlen($itemName);
                             if($num >= 13){
                                 $itemName = str_replace(" ", "", $itemName);
@@ -175,7 +189,7 @@ class Main extends PluginBase implements Listener{
                                 $itemName = str_replace($lastLetter, "", $itemName);
                                 $num = $num - 1;
                             }
-                            $event->setLine(0, col::BOLD.col::GREEN.$event->getLine(0));
+                            
                             $event->setLine(1, col::BOLD.$itemName);
                             $event->setLine(3, "$".$event->getLine(3));
                             $player->sendMessage(col::GREEN."Shop created!");
@@ -183,7 +197,7 @@ class Main extends PluginBase implements Listener{
                         }
                     }else{
                         break;
-                    }
+                    }}
                 case "[BPSell]":
                     if(is_numeric((int) $event->getLine(1)) && is_numeric((int) $event->getLine(2)) && is_numeric((int) $event->getLine(3))){
                         $level = $event->getBlock()->getLevel()->getName();
@@ -200,13 +214,20 @@ class Main extends PluginBase implements Listener{
                             $item = array($id, "0");
                         }
                         if($event->getLine(2) >= 1 && $event->getLine(3) > 0){
+                        	$itemName = Item::get($item[0], $item[1])->getName();
+                             
+                             if($itemName === "Unknown" || $itemName === "Air"){
+                            	$event->setLine(0, col::BOLD.col::RED."ERROR");
+                                $event->setLine(1, col::RED."incorrect id");
+                                $player->sendMessage(col::RED."The store was not created");
+                                break;
+                             }else{
                             $pos = $level.$x.$y.$z;
 
-                            $config = new Config($this->getDataFolder() . "bpssell.yml", Config::YAML);
-                            $config->set($pos, ["itemID"=>$item[0], "itemMeta"=>$item[1], "amount"=>$event->getLine(2), "price"=>$event->getLine(3)]);
-                            $config->save();
-
-                            $itemName = Item::get($item[0], $item[1])->getName();
+                           $shopcfg= new Config($this->getDataFolder() . "bpsell/".$pos.".yml", Config::YAML);
+                            $shopcfg->set($pos, ["itemID"=>$item[0], "itemMeta"=>$item[1], "amount"=>$event->getLine(2), "price"=>$event->getLine(3)]);
+                            $shopcfg->save();
+                            
                             $num = strlen($itemName);
                             if($num >= 13){
                                 $itemName = str_replace(" ", "", $itemName);
@@ -217,17 +238,20 @@ class Main extends PluginBase implements Listener{
                                 $itemName = str_replace($lastLetter, "", $itemName);
                                 $num = $num - 1;
                             }
-                            $event->setLine(0, col::BOLD.col::GREEN.$event->getLine(0));
+                           
                             $event->setLine(1, col::BOLD.$itemName);
                             $event->setLine(3, "$".$event->getLine(3));
                             $player->sendMessage(col::GREEN."Shop created!");
                             break;
                         } 
-                    }
+                    }}
                 }
             }
         }
         public function onTouch(PlayerInteractEvent $event){
+        	  
+        if($event->getBlock()->getID() == 323 || $event->getBlock()->getID() == 63 || $event->getBlock()->getID() == 68){
+        	
         $level = $event->getBlock()->getLevel()->getName();
         $xx = $event->getBlock()->getX();
         $yy = $event->getBlock()->getY();
@@ -236,23 +260,16 @@ class Main extends PluginBase implements Listener{
         $y = (int) $yy;
         $z = (int) $zz;
         $pos = $level.$x.$y.$z;
-
-        $config = new Config($this->getDataFolder() . "bpsbuy.yml", Config::YAML);
-        $buypos = $config->get($pos);
         
-        $config = new Config($this->getDataFolder() . "bpssell.yml", Config::YAML);
-        $sellpos = $config->get($pos);
-         
-        $config = new Config($this->getDataFolder() . "bpsrandom.yml", Config::YAML);
-        $rdpost = $config->get($pos);
-        
-        $config = new Config($this->getDataFolder() . "bpsfree.yml", Config::YAML);
-        $freepost = $config->get($pos);
-        if(is_array($buypos)){
-            $config = new Config($this->getDataFolder() . "bpsbuy.yml", Config::YAML);
-            $info = $config->get($pos);
-
-            $id = $info["itemID"];
+        $fbuy = is_file($this->getDataFolder() . "bpbuy/" .$pos.".yml");
+        $fsell = is_file($this->getDataFolder() . "bpsell/" .$pos.".yml");
+        $frand = is_file($this->getDataFolder() . "bprandom/" .$pos.".yml");
+        $ffree = is_file($this->getDataFolder() . "bpfree/" .$pos.".yml");
+       
+        if($fbuy === true){
+        $config = new Config($this->getDataFolder() . "bpbuy/" .$pos.".yml", Config::YAML);
+        $info = $config->get($pos);
+        $id = $info["itemID"];
             $meta = $info["itemMeta"];
             $amount = $info["amount"];
             $price = $info["price"];
@@ -266,10 +283,26 @@ class Main extends PluginBase implements Listener{
             }else{
                 $player->sendMessage(col::RED."You don't have enough money to buy ".$name);
             }
-    }elseif(is_array($rdpost)){
-            $config = new Config($this->getDataFolder() . "bpsrandom.yml", Config::YAML);
-            $info = $config->get($pos);
-             
+        }elseif($fsell === true){
+        $config = new Config($this->getDataFolder() . "bpsell/" .$pos.".yml", Config::YAML);
+        $info = $config->get($pos);
+        $id = $info["itemID"];
+            $meta = $info["itemMeta"];
+            $amount = $info["amount"];
+            $price = $info["price"];
+            $name = Item::get($id, $meta)->getName();
+            $player = $event->getPlayer();
+            $inventory = $player->getInventory();
+            if($inventory->contains(Item::get($id, $meta, $amount))){
+                $player->getInventory()->removeItem(Item::get($id, $meta, $amount));
+                EconomyAPI::getInstance()->addMoney($player, $price);
+                $player->sendMessage(col::GREEN."Successfully sold ".col::YELLOW.$amount." ".$name.col::GREEN." for ".col::YELLOW."$".$price);
+            }else{
+                $player->sendMessage(col::RED."You don't have enough ".$name);
+            } 
+         }elseif($frand === true){
+        $config = new Config($this->getDataFolder() . "bprandom/" .$pos.".yml", Config::YAML);
+        $info = $config->get($pos);
              $randitem = rand(1, 5);
              $randamount = rand(0, 64);
              if($randitem === 1) {
@@ -298,11 +331,10 @@ class Main extends PluginBase implements Listener{
             }else{
                 $player->sendMessage(col::RED."You don't have enough money to buy ".$name);
             }
-    }elseif(is_array($freepost)){
-            $config = new Config($this->getDataFolder() . "bpsfree.yml", Config::YAML);
-            $info = $config->get($pos);
-            
-            $id = $info["itemID"];
+        }elseif($ffree === true){
+        $config = new Config($this->getDataFolder() . "bpfree/" .$pos.".yml", Config::YAML);
+        $info = $config->get($pos);
+        $id = $info["itemID"];
             $meta = $info["itemMeta"];
             $amount = $info["amount"];
             $name = Item::get($id, $meta)->getName();
@@ -310,29 +342,13 @@ class Main extends PluginBase implements Listener{
           
             $player->getInventory()->addItem(Item::get($id, $meta, $amount));
             $player->sendMessage(col::GREEN."They have given you ".col::YELLOW.$amount." ".$name);
-            
-    }elseif(is_array($sellpos)){
-            $config = new Config($this->getDataFolder() . "bpssell.yml", Config::YAML);
-            $info = $config->get($pos);
-
-            $id = $info["itemID"];
-            $meta = $info["itemMeta"];
-            $amount = $info["amount"];
-            $price = $info["price"];
-            $name = Item::get($id, $meta)->getName();
-            $player = $event->getPlayer();
-            $inventory = $player->getInventory();
-            if($inventory->contains(Item::get($id, $meta, $amount))){
-                $player->getInventory()->removeItem(Item::get($id, $meta, $amount));
-                EconomyAPI::getInstance()->addMoney($player, $price);
-                $player->sendMessage(col::GREEN."Successfully sold ".col::YELLOW.$amount." ".$name.col::GREEN." for ".col::YELLOW."$".$price);
-            }else{
-                $player->sendMessage(col::RED."You don't have enough ".$name);
-            }
         }
+        
+        } 
     }
     
     public function onBreak(BlockBreakEvent $event){
+    	if($event->getBlock()->getID() == 323 || $event->getBlock()->getID() == 63 || $event->getBlock()->getID() == 68){
         $player = $event->getPlayer();
         $level = $event->getBlock()->getLevel()->getName();
         $xx = $event->getBlock()->getX();
@@ -343,58 +359,43 @@ class Main extends PluginBase implements Listener{
         $z = (int) $zz;
         $pos = $level.$x.$y.$z;
 
-        $config = new Config($this->getDataFolder() . "bpsbuy.yml", Config::YAML);
-        $buypos = $config->get($pos);
-        
-        $config = new Config($this->getDataFolder() . "bpssell.yml", Config::YAML);
-        $sellpos = $config->get($pos);
-        
-        $config = new Config($this->getDataFolder() . "bpsrandom.yml", Config::YAML);
-        $rdpost = $config->get($pos);
-        
-        $config = new Config($this->getDataFolder() . "bpsfree.yml", Config::YAML);
-        $freepost = $config->get($pos);
+        $fbuy = is_file($this->getDataFolder() . "bpbuy/" .$pos.".yml");
+        $fsell = is_file($this->getDataFolder() . "bpsell/" .$pos.".yml");
+        $frand = is_file($this->getDataFolder() . "bprandom/" .$pos.".yml");
+        $ffree = is_file($this->getDataFolder() . "bpfree/" .$pos.".yml");
 
-        if(is_array($buypos)){
+        if($fbuy === true){
             if($player->hasPermission("bpsignshop.deleteshop")){
-                $config = new Config($this->getDataFolder() . "bpsbuy.yml", Config::YAML);
-                unset($this->config2->$pos);
-                $this->config2->save(true);
+                @unlink($this->getDataFolder() . "bpbuy/" .$pos.".yml");
                 $player->sendMessage(col::GREEN."Shop deleted!");
             }else{
                 $event->setCancelled();
                 $player->sendMessage(col::RED."You are not allowed to delete shops.");
             }
-        }elseif(is_array($rdpost)){
+        }elseif($frand === true){
             if($player->hasPermission("bpsignshop.deleteshop")){
-                $config = new Config($this->getDataFolder() . "bpsrandom.yml", Config::YAML);
-                unset($this->config4->$pos);
-                $this->config4->save(true);
+               @unlink($this->getDataFolder() . "bprandom/" .$pos.".yml");
                 $player->sendMessage(col::GREEN."Shop deleted!");
             }else{
                 $event->setCancelled();
                 $player->sendMessage(col::RED."You are not allowed to delete shops.");
             }
-         }elseif(is_array($freepost)){
+         }elseif($ffree === true){
             if($player->hasPermission("bpsignshop.deleteshop")){
-                $config = new Config($this->getDataFolder() . "bpsfree.yml", Config::YAML);
-                unset($this->config5->$pos);
-                $this->config5->save(true);
+             @unlink($this->getDataFolder() . "bpfree/" .$pos.".yml");
                 $player->sendMessage(col::GREEN."Shop deleted!");
             }else{
                 $event->setCancelled();
                 $player->sendMessage(col::RED."You are not allowed to delete shops.");
             }
-        }elseif(is_array($sellpos)){
+        }elseif($fsell === true){
             if($player->hasPermission("bpsignshop.deleteshop")){
-                $config = new Config($this->getDataFolder() . "bpssell.yml", Config::YAML);
-                unset($this->config3->$pos);
-                $this->config3->save(true);
+                @unlink($this->getDataFolder() . "bpsell/" .$pos.".yml");
                 $player->sendMessage(col::GREEN."Shop deleted!");
             }else{
                 $event->setCancelled();
                 $player->sendMessage(col::RED."You are not allowed to delete shops.");
-            }
+            }}
         }
     }
 }
