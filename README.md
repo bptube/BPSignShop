@@ -1,6 +1,6 @@
 # THIS PROJECT IS FUNCTIONAL BUT IT WAS CANCELED, WHY IT WOULD BE A PART OF THE NEXT PROJECT:
 
-[BPSignX](https:https://github.com/bptube/BPSignX)
+## [BPSignX](https:https://github.com/bptube/BPSignX)
 
 ![BPSignShop Logo](https://bptube.github.io/images/BPSignShop.png)
 # About
