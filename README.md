@@ -1,3 +1,7 @@
+#THIS PROJECT IS FUNCTIONAL BUT IT WAS CANCELED, WHY IT WOULD BE A PART OF THE NEXT PROJECT:
+
+[BPSignX](https:https://github.com/bptube/BPSignX)
+
 ![BPSignShop Logo](https://bptube.github.io/images/BPSignShop.png)
 # About
 _ BPSignShop is a creation of BPsysGamer, and is released through a GNU license, for which you are free to adapt it to your liking. I only ask you to give the corresponding credits. _
